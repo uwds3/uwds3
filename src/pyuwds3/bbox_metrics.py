@@ -3,11 +3,11 @@ from math import sqrt
 
 def iou(bbox_a, bbox_b):
     """Returns the intersection over union metric"""
-    xmin = int(min(bbox_a.xmin, bbox_b.xmin))
-    ymin = int(min(bbox_a.ymin, bbox_b.ymin))
-    xmax = int(max(bbox_a.xmax, bbox_b.xmax))
-    ymax = int(max(bbox_a.ymax, bbox_b.ymax))
-    intersection_area = ((xmax-xmin)*(ymax-ymin))+1
+    xa = int(max(bbox_a.xmin, bbox_b.xmin))
+    ya = int(max(bbox_a.ymin, bbox_b.ymin))
+    xb = int(min(bbox_a.xmax, bbox_b.xmax))
+    yb = int(min(bbox_a.ymax, bbox_b.ymax))
+    intersection_area = (max(0, xb-xa+1)*max(0, yb-ya+1))
     union_area = bbox_a.area() + bbox_b.area()
     if float(union_area - intersection_area) == 0.0:
         return 0.0
@@ -26,9 +26,9 @@ def centroid(bbox_a, bbox_b):
 
 def overlap(bbox_a, bbox_b):
     """Returns the overlap ratio"""
-    xmin = int(min(bbox_a.xmin, bbox_b.xmin))
-    ymin = int(min(bbox_a.ymin, bbox_b.ymin))
-    xmax = int(max(bbox_a.xmax, bbox_b.xmax))
-    ymax = int(max(bbox_a.ymax, bbox_b.ymax))
-    intersection_area = ((xmax-xmin)*(ymax-ymin))+1
+    xa = int(max(bbox_a.xmin, bbox_b.xmin))
+    ya = int(max(bbox_a.ymin, bbox_b.ymin))
+    xb = int(min(bbox_a.xmax, bbox_b.xmax))
+    yb = int(min(bbox_a.ymax, bbox_b.ymax))
+    intersection_area = (max(0, xb-xa+1)*max(0, yb-ya+1))
     return intersection_area / bbox_a.area()

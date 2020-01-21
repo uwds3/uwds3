@@ -3,7 +3,7 @@ from .vector.vector3d import Vector3D
 
 
 class Cylinder(object):
-    """Represents a 3D cylinder"""
+    """Represents a 2D BoundingBox + depth in the world space (e.g. cylinder)"""
     def __init__(self, w, h,
                  x=.0, y=.0, z=.0,
                  rx=.0, ry=.0, rz=.0):
