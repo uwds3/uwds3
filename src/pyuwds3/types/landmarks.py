@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from .vector import Vector2D
+from .vector.vector2d import Vector2D
 from .features import Features
 
 

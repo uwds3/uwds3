@@ -1,5 +1,6 @@
 from .vector.vector2d_stable import Vector2DStable
 from .vector.scalar_stable import ScalarStable
+from .bbox import BoundingBox
 
 
 class BoundingBoxStable(BoundingBox):

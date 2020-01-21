@@ -1,4 +1,5 @@
 import numpy as np
+from .vector6d import Vector6D
 from .vector3d_stable import Vector3DStable
 
 
@@ -10,13 +11,13 @@ class Vector6DStable(Vector6D):
                  vrx=.0, vry=.0, vrz=.0,
                  p_cov=0.01, m_cov=0.1):
         """ """
-        self.position = Vector3DStabilized(x=x, y=y, z=z,
-                                           vx=vx, vy=vy, vz=vz,
-                                           p_cov=p_cov, m_cov=m_cov)
+        self.position = Vector3DStable(x=x, y=y, z=z,
+                                       vx=vx, vy=vy, vz=vz,
+                                       p_cov=p_cov, m_cov=m_cov)
 
-        self.rotation = Vector3DStabilized(x=rx, y=ry, z=rz,
-                                           vx=vrx, vy=vry, vz=vrz,
-                                           p_cov=p_cov, m_cov=m_cov)
+        self.rotation = Vector3DStable(x=rx, y=ry, z=rz,
+                                       vx=vrx, vy=vry, vz=vrz,
+                                       p_cov=p_cov, m_cov=m_cov)
 
     def from_array(self, array):
         """ """

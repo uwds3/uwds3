@@ -1,4 +1,4 @@
-import math.pi as pi
+from math import pi
 from .vector.vector3d import Vector3D
 
 
