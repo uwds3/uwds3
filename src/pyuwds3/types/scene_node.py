@@ -21,4 +21,5 @@ class SceneNode(object):
     def to_msg(self):
         """
         """
-        raise NotImplementedError()
+        msg = uwds3_msgs.msg.SceneNode()
+        return msg

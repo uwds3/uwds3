@@ -52,3 +52,12 @@ class ScalarStable(object):
                                                 [0, 1]], np.float32) * p_cov
 
         self.filter.measurementNoiseCov = np.array([[1]], np.float32) * m_cov
+
+    def __len__(self):
+        return 1
+
+    def __add__(self, scalar):
+        return self.x + scalar.x
+
+    def __sub__(self, scalar):
+        return self.x - scalar.x

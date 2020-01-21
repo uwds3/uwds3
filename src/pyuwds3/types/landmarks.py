@@ -18,13 +18,6 @@ class FacialLandmarks68Index(object):
     LEFT_EAR = 16
     CHIN = 8
 
-class FacialLandmarks5Index(object):
-    LEFT_EYE = 0
-    RIGHT_EYE = 1
-    NOSE = 4
-    RIGHT_MOUTH_CORNER = 2
-    LEFT_MOUTH_CORNER = 3
-
 
 class FacialLandmarks(Features):
     """Represents a 68 2D point facial landmarks"""

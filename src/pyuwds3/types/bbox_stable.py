@@ -1,10 +1,5 @@
-import numpy as np
-import cv2
-from math import pow, sqrt
-from .vector.vector2d import Vector2D
 from .vector.vector2d_stable import Vector2DStable
 from .vector.scalar_stable import ScalarStable
-from .features import Features
 
 
 class BoundingBoxStable(BoundingBox):
