@@ -36,3 +36,6 @@ class Vector2D(object):
         """Subtracts the given 2D vector"""
         assert len(vector) == 2
         return Vector2D(x=self.x-vector.x, y=self.y-vector.y)
+
+    def __str__(self):
+        return("2d vector : {}".format(self.to_array().flatten()))

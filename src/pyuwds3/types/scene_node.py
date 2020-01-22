@@ -12,7 +12,7 @@ class SceneNode(object):
                  rx=.0, ry=.0, rz=.0):
         """
         """
-        self.id
+        self.uuid
         self.label
         self.state = NodeState.PERCEIVED
         self.pose = Vector6D(x=x, y=y, z=z,

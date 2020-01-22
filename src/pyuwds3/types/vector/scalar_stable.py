@@ -4,14 +4,14 @@ import cv2
 
 class ScalarStable(object):
     """Represents a stabilized scalar"""
-    def __init__(self, x=.0, vx=.0, p_cov=.01, m_cov=.1):
+    def __init__(self, x=.0, vx=.0, dt=0.066, p_cov=100, m_cov=.2):
         """ScalarStabilized constructor"""
         self.x = x
         self.vx = vx
-        self.filter = cv2.KalmanFilter(2, 1, 0)
+        self.filter = cv2.KalmanFilter(2, 1)
         self.filter.statePost = self.to_array()
         self.filter.statePre = self.filter.statePost
-        self.filter.transitionMatrix = np.array([[1, 1],
+        self.filter.transitionMatrix = np.array([[1, dt],
                                                  [0, 1]], np.float32)
         self.filter.measurementMatrix = np.array([[1, 1]], np.float32)
         self.update_cov(p_cov, m_cov)
@@ -38,7 +38,9 @@ class ScalarStable(object):
     def update(self, x):
         """Updates/Filter the scalar"""
         self.filter.predict()
-        self.filter.correct(np.array([[np.float32(x)]]))
+        measurement = np.array([[np.float32(x)]])
+        assert measurement.shape == (1, 1)
+        self.filter.correct(measurement)
         self.from_array(self.filter.statePost)
 
     def predict(self):
@@ -61,3 +63,6 @@ class ScalarStable(object):
 
     def __sub__(self, scalar):
         return self.x - scalar.x
+
+    def __str__(self):
+        return("scalar stable: {}".format(self.to_array().flatten()))

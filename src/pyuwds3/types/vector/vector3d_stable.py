@@ -7,37 +7,48 @@ class Vector3DStable(Vector3D):
     """Represents a 3D vector stabilized"""
     def __init__(self, x=.0, y=.0, z=.0,
                  vx=.0, vy=.0, vz=.0,
-                 p_cov=0.01, m_cov=0.1):
+                 ax=.0, ay=.0, az=.0,
+                 dt=0.066, p_cov=100, m_cov=.2):
         self.x = x
         self.y = y
         self.z = z
         self.vx = vx
         self.vy = vz
         self.vz = vz
-        self.filter = cv2.KalmanFilter(6, 3, 0)
+        self.ax = ax
+        self.ay = ay
+        self.az = az
+        self.filter = cv2.KalmanFilter(9, 3)
         self.filter.statePost = self.to_array()
         self.filter.statePre = self.filter.statePost
-        self.filter.transitionMatrix = np.array([[1, 0, 0, 1, 0, 0],
-                                                 [0, 1, 0, 0, 1, 0],
-                                                 [0, 0, 1, 0, 0, 1],
-                                                 [0, 0, 0, 1, 0, 0],
-                                                 [0, 0, 0, 0, 1, 0],
-                                                 [0, 0, 0, 0, 0, 1]], np.float32)
+        a = 0.5*dt*dt
+        self.filter.transitionMatrix = np.array([[1, 0, 0, dt, 0, 0, a, 0, 0],
+                                                 [0, 1, 0, 0, dt, 0, 0, a, 0],
+                                                 [0, 0, 1, 0, 0, dt, 0, 0, a],
+                                                 [0, 0, 0, 1, 0, 0, dt, 0, 0],
+                                                 [0, 0, 0, 0, 1, 0, 0, dt, 0],
+                                                 [0, 0, 0, 0, 0, 1, 0, 0, dt],
+                                                 [0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                                 [0, 0, 0, 0, 0, 0, 0, 1, 0],
+                                                 [0, 0, 0, 0, 0, 0, 0, 0, 1]], np.float32)
 
-        self.filter.measurementMatrix = np.array([[1, 0, 0, 0, 0, 0],
-                                                  [0, 1, 0, 0, 0, 0],
-                                                  [0, 0, 1, 0, 0, 0]], np.float32)
+        self.filter.measurementMatrix = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0],
+                                                  [0, 1, 0, 0, 0, 0, 0, 0, 0],
+                                                  [0, 0, 1, 0, 0, 0, 0, 0, 0]], np.float32)
         self.update_cov(p_cov, m_cov)
 
     def from_array(self, array):
         """ """
-        assert array.shape == (6, 1)
-        self.x = array[0]
-        self.y = array[1]
-        self.z = array[2]
-        self.vx = array[3]
-        self.vy = array[4]
-        self.vz = array[5]
+        assert array.shape == (9, 1)
+        self.x = array[0][0]
+        self.y = array[1][0]
+        self.z = array[2][0]
+        self.vx = array[3][0]
+        self.vy = array[4][0]
+        self.vz = array[5][0]
+        self.ax = array[6][0]
+        self.ay = array[7][0]
+        self.az = array[8][0]
         self.filter.statePost = array
         self.filter.statePre = self.filter.statePost
 
@@ -48,7 +59,10 @@ class Vector3DStable(Vector3D):
                          [self.z],
                          [self.vx],
                          [self.vy],
-                         [self.vz]], np.float32)
+                         [self.vz],
+                         [self.ax],
+                         [self.ay],
+                         [self.az]], np.float32)
 
     def position(self):
         """ """
@@ -58,12 +72,17 @@ class Vector3DStable(Vector3D):
         """ """
         return Vector3D(x=self.vx, y=self.vy, z=self.vz)
 
+    def acceleration(self):
+        """ """
+        return Vector3D(x=self.ax, y=self.ay, z=self.az)
+
     def update(self, x, y, z):
         """Updates/Filter the 3D vector"""
         self.filter.predict()
-        self.filter.correct(np.array([[np.float32(x)],
-                                      [np.float32(y)],
-                                      [np.float32(z)]]))
+        measurement = np.array([[x], [y], [z]], np.float32)
+        measurement = measurement.flatten().reshape((3, 1))
+        assert measurement.shape == (3, 1)
+        self.filter.correct(measurement)
         self.from_array(self.filter.statePost)
 
     def predict(self):
@@ -73,13 +92,19 @@ class Vector3DStable(Vector3D):
 
     def update_cov(self, p_cov, m_cov):
         """Updates the process and measurement covariances"""
-        self.filter.processNoiseCov = np.array([[1, 0, 0, 0, 0, 0],
-                                                [0, 1, 0, 0, 0, 0],
-                                                [0, 0, 1, 0, 0, 0],
-                                                [0, 0, 0, 1, 0, 0],
-                                                [0, 0, 0, 0, 1, 0],
-                                                [0, 0, 0, 0, 0, 1]], np.float32) * p_cov
+        self.filter.processNoiseCov = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0],
+                                                [0, 1, 0, 0, 0, 0, 0, 0, 0],
+                                                [0, 0, 1, 0, 0, 0, 0, 0, 0],
+                                                [0, 0, 0, 1, 0, 0, 0, 0, 0],
+                                                [0, 0, 0, 0, 1, 0, 0, 0, 0],
+                                                [0, 0, 0, 0, 0, 1, 0, 0, 0],
+                                                [0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                                [0, 0, 0, 0, 0, 0, 0, 1, 0],
+                                                [0, 0, 0, 0, 0, 0, 0, 0, 1]], np.float32) * p_cov
 
-        self.filter.measurementNoiseCov = np.array([[1, 0, 0, 0, 0, 0],
-                                                    [0, 1, 0, 0, 0, 0],
-                                                    [0, 0, 1, 0, 0, 0]], np.float32) * m_cov
+        self.filter.measurementNoiseCov = np.array([[1, 0, 0],
+                                                    [0, 1, 0],
+                                                    [0, 0, 1]], np.float32) * m_cov
+
+    def __str__(self):
+        return("3d vector stable: {}".format(self.to_array().flatten()))

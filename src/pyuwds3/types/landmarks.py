@@ -55,12 +55,7 @@ class FacialLandmarks(Features):
         right_eye_corner = self.get_point(FacialLandmarks68Index.RIGHT_EYE_CORNER).to_array()
         left_mouth_corner = self.get_point(FacialLandmarks68Index.LEFT_MOUTH_CORNER).to_array()
         right_mouth_corner = self.get_point(FacialLandmarks68Index.RIGHT_MOUTH_CORNER).to_array()
-        return np.concatenate([nose,
-                              chin,
-                              left_eye_corner,
-                              right_eye_corner,
-                              left_mouth_corner,
-                              right_mouth_corner], axis=0)
+        return np.array([nose, chin, left_eye_corner, right_eye_corner, left_mouth_corner, right_mouth_corner])
 
     def to_msg(self):
         return Features("facial_landmarks", self.features, 1.0).to_msg()

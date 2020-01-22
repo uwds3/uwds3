@@ -5,17 +5,17 @@ from .vector2d import Vector2D
 
 class Vector2DStable(Vector2D):
     """"Represents a 2D vector stabilized"""
-    def __init__(self, x=.0, y=.0, vx=.0, vy=.0, p_cov=0.01, m_cov=0.1):
+    def __init__(self, x=.0, y=.0, vx=.0, vy=.0, dt=0.066, p_cov=100, m_cov=.2):
         """Vector2DStablized constructor"""
         self.x = x
         self.y = y
         self.vx = vx
         self.vy = vy
-        self.filter = cv2.KalmanFilter(4, 2, 0)
+        self.filter = cv2.KalmanFilter(4, 2)
         self.filter.statePost = self.to_array()
         self.filter.statePre = self.filter.statePost
-        self.filter.transitionMatrix = np.array([[1, 0, 1, 0],
-                                                 [0, 1, 0, 1],
+        self.filter.transitionMatrix = np.array([[1, 0, dt, 0],
+                                                 [0, 1, 0, dt],
                                                  [0, 0, 1, 0],
                                                  [0, 0, 0, 1]], np.float32)
 
@@ -48,11 +48,13 @@ class Vector2DStable(Vector2D):
     def update(self, x, y):
         """Updates/Filter the 2D vector"""
         self.filter.predict()
-        self.filter.correct(np.array([[x], [y]], np.float32))
+        measurement = np.array([[x], [y]], np.float32)
+        assert measurement.shape == (2, 1)
+        self.filter.correct(measurement)
         self.from_array(self.filter.statePost)
 
     def predict(self):
-        """Predicts the 2D vector"""
+        """Predicts the 2D vector based on motion model"""
         self.filter.predict()
         self.from_array(self.filter.statePost)
 
@@ -65,3 +67,6 @@ class Vector2DStable(Vector2D):
 
         self.filter.measurementNoiseCov = np.array([[1, 0],
                                                     [0, 1]], np.float32) * m_cov
+
+    def __str__(self):
+        return("2d vector stable: {}".format(self.to_array().flatten()))

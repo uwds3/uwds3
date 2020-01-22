@@ -14,13 +14,13 @@ class Vector3D(object):
     def from_array(self, array):
         """ """
         assert array.shape == (3, 1)
-        self.x = array[0]
-        self.y = array[1]
-        self.z = array[2]
+        self.x = array[0][0]
+        self.y = array[1][0]
+        self.z = array[2][0]
 
     def to_array(self):
-        """Returns the 3D point's array representation"""
-        return np.array([self.x, self.y, self.z])
+        """Returns the 3D vector's array representation"""
+        return np.array([[self.x], [self.y], [self.z]])
 
     def __len__(self):
         """Returns the lenght of the vector"""
@@ -43,3 +43,6 @@ class Vector3D(object):
     def to_msg(self):
         """Converts to ROS message"""
         return geometry_msgs.msg.Vector3(x=self.x, y=self.y, z=self.z)
+
+    def __str__(self):
+        return("3d vector : {}".format(self.to_array().flatten()))
