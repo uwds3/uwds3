@@ -5,7 +5,7 @@ from .bbox import BoundingBox
 
 
 class BoundingBoxStable(BoundingBox):
-    def __init__(self, xmin, ymin, xmax, ymax, depth=None, dt=0.066, p_cov=100, m_cov=.1):
+    def __init__(self, xmin, ymin, xmax, ymax, depth=None, dt=0.25, p_cov=1, m_cov=.1):
         self.xmin = int(xmin)
         self.ymin = int(ymin)
         self.xmax = int(xmax)
@@ -17,8 +17,8 @@ class BoundingBoxStable(BoundingBox):
         y = center.y
         a = w/float(h)
         self.center_filter = Vector2DStable(x=x, y=y, dt=dt, p_cov=p_cov, m_cov=m_cov)
-        self.aspect_filter = ScalarStable(x=a, dt=dt, p_cov=100, m_cov=.01)
-        self.height_filter = ScalarStable(x=h, dt=dt, p_cov=100, m_cov=.01)
+        self.aspect_filter = ScalarStable(x=a, dt=dt, p_cov=p_cov, m_cov=m_cov)
+        self.height_filter = ScalarStable(x=h, dt=dt, p_cov=p_cov, m_cov=m_cov)
         if depth is not None:
             self.depth_filter = ScalarStable(x=depth, p_cov=p_cov, m_cov=m_cov)
             self.depth = float(depth)
@@ -68,7 +68,7 @@ class BoundingBoxStable(BoundingBox):
 
     def update_cov(self, p_cov, m_cov):
         self.center_filter.update_cov(p_cov, m_cov)
-        self.aspect_filter.update_cov(10,.001)
-        self.height_filter.update_cov(10,.001)
+        self.aspect_filter.update_cov(p_cov, m_cov)
+        self.height_filter.update_cov(p_cov, m_cov)
         if self.depth_filter is not None:
             self.depth_filter.update_cov(p_cov, m_cov)

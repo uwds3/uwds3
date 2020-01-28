@@ -24,6 +24,8 @@ class FacialLandmarks(Features):
     def __init__(self, landmarks, image_width, image_height):
         """FacialLandmarks constructor"""
         self.data = landmarks
+        self.name = "facial_landmarks"
+        self.confidence = .8
         self.image_width = image_width
         self.image_height = image_height
 
@@ -31,10 +33,6 @@ class FacialLandmarks(Features):
         """Returns the 2D point specified by the given index"""
         return Vector2D(int(self.data[index][0]*self.image_width),
                         int(self.data[index][1]*self.image_height))
-
-    def features(self):
-        """Returns the facial landmarks features"""
-        return Features("facial_landmarks", np.array(self.data, np.float64), 0.80)
 
     def draw(self, image, color, thickness):
         """Draws the facial landmarks"""
@@ -56,6 +54,3 @@ class FacialLandmarks(Features):
         left_mouth_corner = self.get_point(FacialLandmarks68Index.LEFT_MOUTH_CORNER).to_array()
         right_mouth_corner = self.get_point(FacialLandmarks68Index.RIGHT_MOUTH_CORNER).to_array()
         return np.array([nose, chin, left_eye_corner, right_eye_corner, left_mouth_corner, right_mouth_corner])
-
-    def to_msg(self):
-        return Features("facial_landmarks", self.features, 1.0).to_msg()

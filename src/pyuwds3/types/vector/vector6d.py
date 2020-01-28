@@ -32,6 +32,7 @@ class Vector6D(object):
         self.rot.x = array[3]
         self.rot.y = array[4]
         self.rot.z = array[5]
+        return self
 
     def to_array(self):
         """Returns the 6D vector's array representation"""
@@ -48,17 +49,18 @@ class Vector6D(object):
         self.rot.x = r[0]
         self.rot.y = r[1]
         self.rot.z = r[2]
+        return self
 
     def transform(self):
         """Returns the homogenous transform"""
-        mat_pos = translation_matrix(self.pos.to_array().flatten())
+        mat_pos = translation_matrix(self.pos.to_array().flatten()[:3])
         mat_rot = euler_matrix(self.rot.x,
                                self.rot.y,
                                self.rot.z, "rxyz")
         return np.dot(mat_pos, mat_rot)
 
     def inv(self):
-        """Inverse the vector"""
+        """Inverse the 6d vector"""
         return Vector6D().from_transform(np.linalg.inv(self.transform()))
 
     def from_quaternion(self, rx, ry, rz, rw):
@@ -66,6 +68,7 @@ class Vector6D(object):
         self.rot.x = euler[0]
         self.rot.y = euler[1]
         self.rot.z = euler[2]
+        return self
 
     def quaternion(self):
         """Returns the rotation quaternion"""

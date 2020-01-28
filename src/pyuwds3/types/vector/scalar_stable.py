@@ -4,17 +4,19 @@ import cv2
 
 class ScalarStable(object):
     """Represents a stabilized scalar"""
-    def __init__(self, x=.0, vx=.0, dt=0.066, p_cov=100, m_cov=.2):
+    def __init__(self, x=.0, vx=.0, dt=0.066, p_cov=1, m_cov=.1):
         """ScalarStabilized constructor"""
         self.x = x
         self.vx = vx
         self.filter = cv2.KalmanFilter(2, 1)
         self.filter.statePost = self.to_array()
         self.filter.statePre = self.filter.statePost
-        self.filter.transitionMatrix = np.array([[1, dt],
-                                                 [0, 1]], np.float32)
         self.filter.measurementMatrix = np.array([[1, 1]], np.float32)
-        self.update_cov(p_cov, m_cov)
+        self.__update_transition(dt)
+        self.__update_noise_cov(p_cov, m_cov)
+        # self.filter.errorCovPre = np.eye(2, dtype=np.float32) * p_cov
+        # self.filter.errorCovPost = self.filter.errorCovPre
+        self.last_update = cv2.getTickCount()
 
     def from_array(self, array):
         """Updates the scalar stabilized state from array"""
@@ -37,6 +39,7 @@ class ScalarStable(object):
 
     def update(self, x):
         """Updates/Filter the scalar"""
+        self.__update_time()
         self.filter.predict()
         measurement = np.array([[np.float32(x)]])
         assert measurement.shape == (1, 1)
@@ -45,15 +48,26 @@ class ScalarStable(object):
 
     def predict(self):
         """Predicts the scalar state"""
+        self.__update_time()
         self.filter.predict()
         self.from_array(self.filter.statePost)
 
-    def update_cov(self, p_cov, m_cov):
+    def __update_noise_cov(self, p_cov, m_cov):
         """Updates the process and measurement covariances"""
         self.filter.processNoiseCov = np.array([[1, 0],
                                                 [0, 1]], np.float32) * p_cov
 
         self.filter.measurementNoiseCov = np.array([[1]], np.float32) * m_cov
+
+    def __update_transition(self, dt):
+        self.filter.transitionMatrix = np.array([[1, dt],
+                                                 [0, 1]], np.float32)
+
+    def __update_time(self):
+        now = cv2.getTickCount()
+        elapsed_time = (now - self.last_update)/cv2.getTickFrequency()
+        self.last_update = now
+        self.__update_transition(elapsed_time)
 
     def __len__(self):
         return 1

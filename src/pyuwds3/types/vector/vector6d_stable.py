@@ -9,15 +9,15 @@ class Vector6DStable(Vector6D):
                  vx=.0, vy=.0, vz=.0,
                  rx=.0, ry=.0, rz=.0,
                  vrx=.0, vry=.0, vrz=.0,
-                 dt=0.066, p_cov=100, m_cov=.001):
+                 dt=0.25, p_cov=.73, m_cov=.003):
         """ """
         self.pos = Vector3DStable(x=x, y=y, z=z,
                                   vx=vx, vy=vy, vz=vz,
-                                  dt=dt, p_cov=p_cov, m_cov=m_cov)
+                                  dt=dt, p_cov=p_cov, m_cov=m_cov, use_accel=False)
 
         self.rot = Vector3DStable(x=rx, y=ry, z=rz,
                                   vx=vrx, vy=vry, vz=vrz,
-                                  dt=dt, p_cov=p_cov, m_cov=m_cov)
+                                  dt=dt, p_cov=p_cov, m_cov=m_cov, use_accel=False)
 
     def position(self):
         """ """
@@ -42,6 +42,14 @@ class Vector6DStable(Vector6D):
     def linear_acceleration(self):
         """ """
         return self.rot.acceleration()
+
+    def __add__(self, vector):
+        """Adds the given vector"""
+        return Vector6D().from_transform(np.dot(self.transform(), vector.transform()))
+
+    def __sub__(self, vector):
+        """Substracts the given vector"""
+        return Vector6D().from_transform(np.dot(self.transform(), vector.inv().transform()))
 
     def from_array(self, array):
         """ """

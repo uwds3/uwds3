@@ -17,6 +17,7 @@ class Vector3D(object):
         self.x = array[0][0]
         self.y = array[1][0]
         self.z = array[2][0]
+        return self
 
     def to_array(self):
         """Returns the 3D vector's array representation"""
