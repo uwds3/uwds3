@@ -9,7 +9,7 @@ class Vector6DStable(Vector6D):
                  vx=.0, vy=.0, vz=.0,
                  rx=.0, ry=.0, rz=.0,
                  vrx=.0, vry=.0, vrz=.0,
-                 dt=0.25, p_cov=.73, m_cov=.003):
+                 dt=0.25, p_cov=.03, m_cov=.006):
         """ """
         self.pos = Vector3DStable(x=x, y=y, z=z,
                                   vx=vx, vy=vy, vz=vz,
@@ -39,7 +39,7 @@ class Vector6DStable(Vector6D):
         """ """
         return self.pos.acceleration()
 
-    def linear_acceleration(self):
+    def angular_acceleration(self):
         """ """
         return self.rot.acceleration()
 

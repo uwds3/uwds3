@@ -11,6 +11,9 @@ class Features(object):
         self.data = np.array(data)
         self.confidence = confidence
 
+    def to_array(self):
+        return np.array(self.data, np.float32)
+
     def to_msg(self):
         """Converts into ROS message"""
         return uwds3_msgs.msg.Features(name=self.name,

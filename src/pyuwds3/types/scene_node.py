@@ -1,3 +1,4 @@
+import uuid
 import uwds3_msgs
 from .vector.vector6d import Vector6D
 
@@ -12,11 +13,12 @@ class SceneNode(object):
                  rx=.0, ry=.0, rz=.0):
         """
         """
-        self.uuid
-        self.label
+        self.uuid = str(uuid.uuid4()).replace("-", "")
+        self.label = "thing"
         self.state = NodeState.PERCEIVED
-        self.pose = Vector6D(x=x, y=y, z=z,
-                             rx=rx, ry=ry, rz=rz)
+        self.pose = None
+
+    def is_localised
 
     def to_msg(self):
         """

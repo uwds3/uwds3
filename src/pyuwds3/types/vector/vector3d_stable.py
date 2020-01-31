@@ -28,7 +28,6 @@ class Vector3DStable(Vector3D):
             self.filter = cv2.KalmanFilter(6, 3)
 
         self.filter.statePost = self.to_array()
-        self.filter.statePre = self.filter.statePost
         self.use_accel = use_accel
         if self.use_accel is True:
             self.filter.measurementMatrix = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -40,15 +39,6 @@ class Vector3DStable(Vector3D):
                                                       [0, 0, 1, 0, 0, 0]], np.float32)
         self.__update_transition(dt)
         self.__update_noise_cov(p_cov, m_cov)
-        if self.use_accel is True:
-            self.filter.errorCovPre = np.eye(9, dtype=np.float32)
-            for i in range(0, 8):
-                self.filter.errorCovPre[i][i] = m_cov if i < 2 else 1
-        else:
-            self.filter.errorCovPre = np.eye(6, dtype=np.float32)
-            for i in range(0, 5):
-                self.filter.errorCovPre[i][i] = m_cov if i < 2 else 1
-        self.filter.errorCovPost = self.filter.errorCovPre
         self.last_update = cv2.getTickCount()
 
     def from_array(self, array):

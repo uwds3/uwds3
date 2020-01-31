@@ -1,9 +1,10 @@
 import numpy as np
+import math
 import cv2
 import geometry_msgs
 from tf.transformations import translation_matrix, euler_matrix, euler_from_matrix
 from tf.transformations import translation_from_matrix, quaternion_from_matrix
-from tf.transformations import euler_from_quaternion
+from tf.transformations import quaternion_from_euler, euler_from_quaternion, unit_vector
 from .vector3d import Vector3D
 
 
@@ -64,7 +65,7 @@ class Vector6D(object):
         return Vector6D().from_transform(np.linalg.inv(self.transform()))
 
     def from_quaternion(self, rx, ry, rz, rw):
-        euler = euler_from_quaternion([rx, ry, rz, rw])
+        euler = euler_from_quaternion([rx, ry, rz, rw], "rxyz")
         self.rot.x = euler[0]
         self.rot.y = euler[1]
         self.rot.z = euler[2]
@@ -72,7 +73,9 @@ class Vector6D(object):
 
     def quaternion(self):
         """Returns the rotation quaternion"""
-        return quaternion_from_matrix(self.transform())
+        q = quaternion_from_euler(self.rot.x, self.rot.y, self.rot.z, "rxyz")
+        q /= math.sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3])
+        return q
 
     def __len__(self):
         """Returns the vector's lenght"""

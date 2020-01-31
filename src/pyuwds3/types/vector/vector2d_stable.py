@@ -13,13 +13,10 @@ class Vector2DStable(Vector2D):
         self.vy = vy
         self.filter = cv2.KalmanFilter(4, 2)
         self.filter.statePost = self.to_array()
-        self.filter.statePre = self.filter.statePost
         self.filter.measurementMatrix = np.array([[1, 0, 0, 0],
                                                   [0, 1, 0, 0]], np.float32)
         self.__update_transition(dt)
         self.__update_noise_cov(p_cov, m_cov)
-        self.filter.errorCovPre = np.eye(4, dtype=np.float32) * p_cov
-        self.filter.errorCovPost = self.filter.errorCovPre
         self.last_update = cv2.getTickCount()
 
     def from_array(self, array):

@@ -5,7 +5,7 @@ from .bbox import BoundingBox
 
 
 class BoundingBoxStable(BoundingBox):
-    def __init__(self, xmin, ymin, xmax, ymax, depth=None, dt=0.25, p_cov=1, m_cov=.1):
+    def __init__(self, xmin, ymin, xmax, ymax, depth=None, dt=0.25, p_cov=.03, m_cov=.006):
         self.xmin = int(xmin)
         self.ymin = int(ymin)
         self.xmax = int(xmax)

@@ -12,20 +12,12 @@ class Detection(object):
         self.bbox = BoundingBox(xmin, ymin, xmax, ymax, depth=None, mode=mode)
         self.features = {}
 
-    def draw(self, image, color, thickness):
+    def draw(self, image, color):
         """Draws the detection"""
-        self.bbox.draw(image, color, thickness)
-        cv2.putText(image,
-                    "{}".format(self.confidence),
-                    (self.bbox.xmin+5, self.bbox.ymax+5),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    color,
-                    thickness)
-        cv2.putText(image,
-                    self.label,
-                    (self.bbox.xmin+35, self.bbox.ymax+5),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    color,
-                    thickness)
+        text_color = (0, 0, 0)
+        cv2.rectangle(image, (self.bbox.xmin, self.bbox.ymax-20),
+                      (self.bbox.xmax, self.bbox.ymax), (200, 200, 200), -1)
+        self.bbox.draw(image, color, 2)
+        self.bbox.draw(image, text_color, 1)
+        cv2.putText(image, "{:0.2f}".format(self.confidence), (self.bbox.xmax-40, self.bbox.ymax-8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)
+        cv2.putText(image, self.label, (self.bbox.xmin+5, self.bbox.ymax-8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)

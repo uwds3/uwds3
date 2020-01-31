@@ -10,12 +10,9 @@ class ScalarStable(object):
         self.vx = vx
         self.filter = cv2.KalmanFilter(2, 1)
         self.filter.statePost = self.to_array()
-        self.filter.statePre = self.filter.statePost
         self.filter.measurementMatrix = np.array([[1, 1]], np.float32)
         self.__update_transition(dt)
         self.__update_noise_cov(p_cov, m_cov)
-        # self.filter.errorCovPre = np.eye(2, dtype=np.float32) * p_cov
-        # self.filter.errorCovPost = self.filter.errorCovPre
         self.last_update = cv2.getTickCount()
 
     def from_array(self, array):
