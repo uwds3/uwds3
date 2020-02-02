@@ -9,15 +9,15 @@ class Vector6DStable(Vector6D):
                  vx=.0, vy=.0, vz=.0,
                  rx=.0, ry=.0, rz=.0,
                  vrx=.0, vry=.0, vrz=.0,
-                 dt=0.25, p_cov=.03, m_cov=.006):
+                 dt=0.25, p_cov=.078, m_cov=.0028):
         """ """
         self.pos = Vector3DStable(x=x, y=y, z=z,
                                   vx=vx, vy=vy, vz=vz,
-                                  dt=dt, p_cov=p_cov, m_cov=m_cov, use_accel=False)
+                                  p_cov=p_cov, m_cov=m_cov, use_accel=True)
 
         self.rot = Vector3DStable(x=rx, y=ry, z=rz,
                                   vx=vrx, vy=vry, vz=vrz,
-                                  dt=dt, p_cov=p_cov, m_cov=m_cov, use_accel=False)
+                                  p_cov=p_cov, m_cov=m_cov, use_accel=True)
 
     def position(self):
         """ """
@@ -53,8 +53,8 @@ class Vector6DStable(Vector6D):
 
     def from_array(self, array):
         """ """
-        assert array[:9][0] == (9, 1)
-        assert array[9:][0] == (9, 1)
+        assert array[:9][0].shape == (9, 1)
+        assert array[9:][0].shape == (9, 1)
         self.pos.from_array(array[:9][0])
         self.rot.from_array(array[9:][0])
 

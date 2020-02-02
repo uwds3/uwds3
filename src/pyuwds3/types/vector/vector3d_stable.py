@@ -8,7 +8,7 @@ class Vector3DStable(Vector3D):
     def __init__(self, x=.0, y=.0, z=.0,
                  vx=.0, vy=.0, vz=.0,
                  ax=.0, ay=.0, az=.0,
-                 dt=0.25, p_cov=1, m_cov=.1, use_accel=True):
+                 p_cov=.03, m_cov=.01, use_accel=True):
         self.x = x
         self.y = y
         self.z = z
@@ -37,7 +37,6 @@ class Vector3DStable(Vector3D):
             self.filter.measurementMatrix = np.array([[1, 0, 0, 0, 0, 0],
                                                       [0, 1, 0, 0, 0, 0],
                                                       [0, 0, 1, 0, 0, 0]], np.float32)
-        self.__update_transition(dt)
         self.__update_noise_cov(p_cov, m_cov)
         self.last_update = cv2.getTickCount()
 

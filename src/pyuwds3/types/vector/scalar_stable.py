@@ -4,14 +4,13 @@ import cv2
 
 class ScalarStable(object):
     """Represents a stabilized scalar"""
-    def __init__(self, x=.0, vx=.0, dt=0.066, p_cov=1, m_cov=.1):
+    def __init__(self, x=.0, vx=.0, p_cov=.03, m_cov=.01):
         """ScalarStabilized constructor"""
         self.x = x
         self.vx = vx
         self.filter = cv2.KalmanFilter(2, 1)
         self.filter.statePost = self.to_array()
         self.filter.measurementMatrix = np.array([[1, 1]], np.float32)
-        self.__update_transition(dt)
         self.__update_noise_cov(p_cov, m_cov)
         self.last_update = cv2.getTickCount()
 

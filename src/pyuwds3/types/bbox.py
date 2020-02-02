@@ -88,17 +88,20 @@ class BoundingBox(object):
             self.depth = array[4]
 
     def to_array(self):
+        """ """
         if self.depth is not None:
             return np.array([self.xmin, self.ymin, self.xmax, self.ymax, self.depth], np.float32)
         else:
             return np.array([self.xmin, self.ymin, self.xmax, self.ymax], np.float32)
 
     def to_xyxy(self):
-        raise NotImplementedError()
+        """ """
+        return self.to_array()
 
     def to_xywh(self):
+        """ """
         c = self.center()
-        if depth is None:
+        if self.depth is None:
             return np.array([c.x, c.y, self.width(), self.height()], np.float32)
         else:
             return np.array([c.x, c.y, self.width(), self.height(), self.depth], np.float32)

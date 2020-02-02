@@ -1,4 +1,5 @@
 import uuid
+import cv2
 import uwds3_msgs
 from .vector.vector6d import Vector6D
 
@@ -18,7 +19,8 @@ class SceneNode(object):
         self.state = NodeState.PERCEIVED
         self.pose = None
 
-    def is_localised
+    def is_localised(self):
+        return self.pose is not None
 
     def to_msg(self):
         """

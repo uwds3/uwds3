@@ -5,7 +5,7 @@ from .vector2d import Vector2D
 
 class Vector2DStable(Vector2D):
     """"Represents a 2D vector stabilized"""
-    def __init__(self, x=.0, y=.0, vx=.0, vy=.0, dt=0.066, p_cov=1, m_cov=.1):
+    def __init__(self, x=.0, y=.0, vx=.0, vy=.0, p_cov=.03, m_cov=.01):
         """Vector2DStablized constructor"""
         self.x = x
         self.y = y
@@ -15,7 +15,6 @@ class Vector2DStable(Vector2D):
         self.filter.statePost = self.to_array()
         self.filter.measurementMatrix = np.array([[1, 0, 0, 0],
                                                   [0, 1, 0, 0]], np.float32)
-        self.__update_transition(dt)
         self.__update_noise_cov(p_cov, m_cov)
         self.last_update = cv2.getTickCount()
 
