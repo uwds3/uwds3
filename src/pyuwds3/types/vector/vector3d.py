@@ -1,6 +1,6 @@
 import numpy as np
 import geometry_msgs
-from .vector2d import Vector2D
+from .vector2d import Vector3D
 
 
 class Vector3D(object):
@@ -28,22 +28,22 @@ class Vector3D(object):
         return 3
 
     def __add__(self, vector):
-        """Adds the given 2D vector"""
+        """Adds the given 3D vector"""
         assert len(vector) == 3
-        return Vector2D(x=self.x+vector.x,
+        return Vector3D(x=self.x+vector.x,
                         y=self.y+vector.y,
                         z=self.z+vector.z)
 
     def __sub__(self, vector):
-        """Subtracts the given 2D vector"""
+        """Subtracts the given 3D vector"""
         assert len(vector) == 3
-        return Vector2D(x=self.x-vector.x,
+        return Vector3D(x=self.x-vector.x,
                         y=self.y-vector.y,
                         z=self.z-vector.z)
 
     def to_msg(self):
         """Converts to ROS message"""
-        return geometry_msgs.msg.Vector3(x=self.x, y=self.y, z=self.z)
+        return geometry_msgs.msg.Vector3D(x=self.x, y=self.y, z=self.z)
 
     def __str__(self):
         return("3d vector : {}".format(self.to_array().flatten()))
