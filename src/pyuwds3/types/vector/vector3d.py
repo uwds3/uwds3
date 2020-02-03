@@ -1,6 +1,5 @@
 import numpy as np
 import geometry_msgs
-from .vector2d import Vector3D
 
 
 class Vector3D(object):
@@ -43,7 +42,7 @@ class Vector3D(object):
 
     def to_msg(self):
         """Converts to ROS message"""
-        return geometry_msgs.msg.Vector3D(x=self.x, y=self.y, z=self.z)
+        return geometry_msgs.msg.Vector3(x=self.x, y=self.y, z=self.z)
 
     def __str__(self):
         return("3d vector : {}".format(self.to_array().flatten()))
