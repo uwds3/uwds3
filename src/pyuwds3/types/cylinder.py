@@ -1,4 +1,5 @@
 from math import pi
+import uwds3_msgs
 from .vector.vector3d import Vector3D
 
 
@@ -32,3 +33,10 @@ class Cylinder(object):
     def area(self):
         """Returns the cylinder's area in cube meters"""
         return 2.0*pi*self.radius()*self.height()
+
+    def to_msg(self):
+        shape = uwds3_msgs.msg.PrimitiveShape
+        shape.type = uwds3_msgs.msg.PrimitiveShape.CYLINDER
+        shape.dimensions.append(self.width())
+        shape.dimensions.append(self.height())
+        return shape

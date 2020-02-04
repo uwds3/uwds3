@@ -8,19 +8,12 @@ from .cylinder import Cylinder
 class BoundingBox(object):
     """Represents a 2D+depth aligned bounding box in the image space"""
 
-    def __init__(self, xmin, ymin, xmax, ymax, depth=None, mode="xyxy"):
+    def __init__(self, xmin, ymin, xmax, ymax, depth=None):
         """BoundingBox constructor"""
-        self.__check_mode(mode)
-        if mode == "xyxy":
-            self.xmin = int(xmin)
-            self.ymin = int(ymin)
-            self.xmax = int(xmax)
-            self.ymax = int(ymax)
-        else:
-            self.xmin = int(xmin - xmax/2.0)
-            self.ymin = int(ymin - ymax/2.0)
-            self.xmax = int(xmin + xmax/2.0)
-            self.ymax = int(ymax + ymax/2.0)
+        self.xmin = int(xmin)
+        self.ymin = int(ymin)
+        self.xmax = int(xmax)
+        self.ymax = int(ymax)
         self.depth = depth
 
     def center(self):
@@ -66,24 +59,13 @@ class BoundingBox(object):
         """Draws the bbox"""
         cv2.rectangle(frame, (self.xmin, self.ymin), (self.xmax, self.ymax), color, thickness)
 
-    def from_array(self, array, mode="xyxy"):
+    def from_array(self, array):
         """ """
-        self.__check_mode(mode)
         assert array.shape == (5, 1) or array.shape == (6, 1)
-        if mode == "xyxy":
-            self.xmin = array[0]
-            self.ymin = array[1]
-            self.xmax = array[2]
-            self.ymax = array[3]
-        else:
-            x = array[0]
-            y = array[1]
-            w = array[2]
-            h = array[3]
-            self.xmin = x - w/2.0
-            self.ymin = y - h/2.0
-            self.xmax = x + w/2.0
-            self.ymax = y + h/2.0
+        self.xmin = array[0]
+        self.ymin = array[1]
+        self.xmax = array[2]
+        self.ymax = array[3]
         if array.shape == (6, 1):
             self.depth = array[4]
 
@@ -98,7 +80,29 @@ class BoundingBox(object):
         """ """
         return self.to_array()
 
-    def to_xywh(self):
+    def from_mxywh(self, x, y, w, h):
+        """ """
+        self.xmin = int(x)
+        self.ymin = int(y)
+        self.xmax = int(x + w)
+        self.ymax = int(y + h)
+        return self
+
+    def to_mxywh(self):
+        if self.depth is None:
+            return np.array([self.xmin, self.ymin, self.width(), self.height()], np.float32)
+        else:
+            return np.array([self.xmin, self.ymin, self.width(), self.height(), self.depth], np.float32)
+
+    def from_cxywh(self, x, y, w, h):
+        """ """
+        self.xmin = int(x - w/2.0)
+        self.ymin = int(y - h/2.0)
+        self.xmax = int(x + w/2.0)
+        self.ymax = int(y + h/2.0)
+        return self
+
+    def to_cxywh(self):
         """ """
         c = self.center()
         if self.depth is None:
@@ -114,7 +118,3 @@ class BoundingBox(object):
                     self.ymax/float(image_height),
                     min(self.depth/float(max_depth), float(1.0))]
         return Features("geometric", np.array(features).flatten(), 0.89)
-
-    def __check_mode(self, mode):
-        if mode not in ["xyxy", "xywh"]:
-            raise ValueError("BoundingBox mode should be 'xyxy' (xmin, xmax, ymin, ymax) or 'xywh' (cx, cy, w, h)")

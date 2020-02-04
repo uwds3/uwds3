@@ -6,7 +6,7 @@ from .bbox import BoundingBox
 
 class BoundingBoxStable(BoundingBox):
     """ """
-    def __init__(self, xmin, ymin, xmax, ymax, depth=None, p_cov=.03, m_cov=.001):
+    def __init__(self, xmin, ymin, xmax, ymax, depth=None, p_cov=.0007, m_cov=.003):
         self.xmin = int(xmin)
         self.ymin = int(ymin)
         self.xmax = int(xmax)

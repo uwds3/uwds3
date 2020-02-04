@@ -31,8 +31,8 @@ class FacialLandmarks(Features):
 
     def get_point(self, index):
         """Returns the 2D point specified by the given index"""
-        return Vector2D(int(self.data[index][0]*self.image_width),
-                        int(self.data[index][1]*self.image_height))
+        return Vector2D(int(self.data[index][0]),
+                        int(self.data[index][1]))
 
     def draw(self, image, color, thickness):
         """Draws the facial landmarks"""
@@ -45,6 +45,12 @@ class FacialLandmarks(Features):
                 point2 = self.get_point(idx+1)
                 cv2.line(image, (point1.x, point1.y),
                                 (point2.x, point2.y), color, thickness)
+
+    def to_array(self):
+        features = np.zeros((68, 2), dtype=np.float32)
+        features[:, 0] = self.data[:, 0]/float(self.image_width)
+        features[:, 1] = self.data[:, 1]/float(self.image_height)
+        return features.flatten()
 
     def head_pose_points(self):
         nose = self.get_point(FacialLandmarks68Index.NOSE).to_array()
