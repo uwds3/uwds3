@@ -26,13 +26,13 @@ class Vector6D(object):
 
     def from_array(self, array):
         """Set the 6D vector"""
-        assert len(array) == 6
-        self.pos.x = array[0]
-        self.pos.y = array[1]
-        self.pos.z = array[2]
-        self.rot.x = array[3]
-        self.rot.y = array[4]
-        self.rot.z = array[5]
+        assert len(array) == (6, 1)
+        self.pos.x = array[0][0]
+        self.pos.y = array[1][0]
+        self.pos.z = array[2][0]
+        self.rot.x = array[3][0]
+        self.rot.y = array[4][0]
+        self.rot.z = array[5][0]
         return self
 
     def to_array(self):
@@ -53,7 +53,7 @@ class Vector6D(object):
         return self
 
     def transform(self):
-        """Returns the homogenous transform"""
+        """Returns the homogeneous transform"""
         mat_pos = translation_matrix(self.pos.to_array().flatten()[:3])
         rot = self.rot.to_array().flatten()[:3]
         mat_rot = euler_matrix(rot[0],
