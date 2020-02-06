@@ -55,9 +55,10 @@ class Vector6D(object):
     def transform(self):
         """Returns the homogenous transform"""
         mat_pos = translation_matrix(self.pos.to_array().flatten()[:3])
-        mat_rot = euler_matrix(self.rot.x,
-                               self.rot.y,
-                               self.rot.z, "rxyz")
+        rot = self.rot.to_array().flatten()[:3]
+        mat_rot = euler_matrix(rot[0],
+                               rot[1],
+                               rot[2], "rxyz")
         return np.dot(mat_pos, mat_rot)
 
     def inv(self):
@@ -73,6 +74,7 @@ class Vector6D(object):
 
     def quaternion(self):
         """Returns the rotation quaternion"""
+        q = np.zeros((4,), dtype=np.float64)
         q = quaternion_from_euler(self.rot.x, self.rot.y, self.rot.z, "rxyz")
         q /= math.sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3])
         return q
@@ -99,7 +101,7 @@ class Vector6D(object):
         msg.orientation.x = q[0]
         msg.orientation.y = q[1]
         msg.orientation.z = q[2]
-        msg.orientation.x = q[3]
+        msg.orientation.w = q[3]
         return msg
 
     def __str__(self):

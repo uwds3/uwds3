@@ -2,6 +2,7 @@ import uwds3_msgs
 import numpy as np
 from .vector.vector2d import Vector2D
 
+
 class Camera(object):
     """Represents a camera sensor (real or virtual)"""
 
