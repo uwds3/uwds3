@@ -118,3 +118,7 @@ class BoundingBox(object):
                     self.ymax/float(image_height),
                     min(self.depth/float(max_depth), float(1.0))]
         return Features("geometric", np.array(features).flatten(), 0.89)
+
+
+    def __str__(self):
+        return str([self.xmin, self.ymin, self.xmax, self.ymax])

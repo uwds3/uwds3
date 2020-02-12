@@ -21,3 +21,6 @@ class Detection(object):
         self.bbox.draw(image, text_color, 1)
         cv2.putText(image, "{:0.2f}".format(self.confidence), (self.bbox.xmax-40, self.bbox.ymax-8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)
         cv2.putText(image, self.label, (self.bbox.xmin+5, self.bbox.ymax-8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)
+
+    def __str__(self):
+        return "{}: {} with {} confidence".format(self.bbox, self.label, self.confidence)
