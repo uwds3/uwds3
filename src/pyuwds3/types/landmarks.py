@@ -26,6 +26,7 @@ class FacialLandmarks(Features):
         self.data = landmarks
         self.name = "facial_landmarks"
         self.confidence = .8
+        self.dimensions = (68, 2)
         self.image_width = image_width
         self.image_height = image_height
 

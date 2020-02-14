@@ -1,4 +1,5 @@
 from math import pi
+import numpy as np
 import uwds3_msgs
 from .vector.vector6d import Vector6D
 
@@ -13,6 +14,7 @@ class Cylinder(object):
                              rx=rx, ry=ry, rz=rz)
         self.w = w
         self.h = h
+        self.color = np.zeros(4)
 
     def center(self):
         """Returns the bbox's center in pixels"""
@@ -39,4 +41,5 @@ class Cylinder(object):
         shape.type = uwds3_msgs.msg.PrimitiveShape.CYLINDER
         shape.dimensions.append(self.width())
         shape.dimensions.append(self.height())
+        shape.color = self.color
         return shape
