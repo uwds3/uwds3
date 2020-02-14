@@ -5,18 +5,23 @@ from .vector3d_stable import Vector3DStable
 
 class Vector6DStable(Vector6D):
     """ """
-    def __init__(self, x=.0, y=.0, z=.0,
-                 vx=.0, vy=.0, vz=.0,
+    def __init__(self,
+                 x=.0, y=.0, z=.0,
                  rx=.0, ry=.0, rz=.0,
+                 vx=.0, vy=.0, vz=.0,
                  vrx=.0, vry=.0, vrz=.0,
+                 ax=.0, ay=.0, az=.0,
+                 arx=.0, ary=.0, arz=.0,
                  p_cov=.002, m_cov=.028):
         """ """
         self.pos = Vector3DStable(x=x, y=y, z=z,
                                   vx=vx, vy=vy, vz=vz,
+                                  ax=ax, ay=ay, az=az,
                                   p_cov=p_cov, m_cov=m_cov, use_accel=True)
 
         self.rot = Vector3DStable(x=rx, y=ry, z=rz,
                                   vx=vrx, vy=vry, vz=vrz,
+                                  ax=arx, ay=ary, az=arz,
                                   p_cov=p_cov, m_cov=m_cov, use_accel=True)
 
     def position(self):

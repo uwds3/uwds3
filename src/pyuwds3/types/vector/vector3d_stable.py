@@ -5,7 +5,8 @@ from .vector3d import Vector3D
 
 class Vector3DStable(Vector3D):
     """Represents a 3D vector stabilized"""
-    def __init__(self, x=.0, y=.0, z=.0,
+    def __init__(self,
+                 x=.0, y=.0, z=.0,
                  vx=.0, vy=.0, vz=.0,
                  ax=.0, ay=.0, az=.0,
                  p_cov=.03, m_cov=.01, use_accel=True):

@@ -65,8 +65,8 @@ class Vector6D(object):
         """Inverse the 6d vector"""
         return Vector6D().from_transform(np.linalg.inv(self.transform()))
 
-    def from_quaternion(self, rx, ry, rz, rw):
-        euler = euler_from_quaternion([rx, ry, rz, rw], "rxyz")
+    def from_quaternion(self, qx, qy, qz, qw):
+        euler = euler_from_quaternion([qx, qy, qz, qw], "rxyz")
         self.rot.x = euler[0]
         self.rot.y = euler[1]
         self.rot.z = euler[2]

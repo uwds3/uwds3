@@ -41,6 +41,7 @@ class BoundingBox(object):
         return (self.width()+1)*(self.height()+1)
 
     def cylinder(self, camera_matrix, dist_coeffs):
+        """ """
         assert self.depth is not None
         z = self.depth
         fx = camera_matrix[0][0]
@@ -80,26 +81,27 @@ class BoundingBox(object):
         """ """
         return self.to_array()
 
-    def from_mxywh(self, x, y, w, h):
+    def from_mxywh(self, xmin, ymin, w, h):
         """ """
-        self.xmin = int(x)
-        self.ymin = int(y)
+        self.xmin = int(xmin)
+        self.ymin = int(ymin)
         self.xmax = int(x + w)
         self.ymax = int(y + h)
         return self
 
     def to_mxywh(self):
+        """ """
         if self.depth is None:
             return np.array([self.xmin, self.ymin, self.width(), self.height()], np.float32)
         else:
             return np.array([self.xmin, self.ymin, self.width(), self.height(), self.depth], np.float32)
 
-    def from_cxywh(self, x, y, w, h):
+    def from_cxywh(self, cx, cy, w, h):
         """ """
-        self.xmin = int(x - w/2.0)
-        self.ymin = int(y - h/2.0)
-        self.xmax = int(x + w/2.0)
-        self.ymax = int(y + h/2.0)
+        self.xmin = int(cx - w/2.0)
+        self.ymin = int(cy - h/2.0)
+        self.xmax = int(cx + w/2.0)
+        self.ymax = int(cy + h/2.0)
         return self
 
     def to_cxywh(self):
@@ -118,7 +120,6 @@ class BoundingBox(object):
                     self.ymax/float(image_height),
                     min(self.depth/float(max_depth), float(1.0))]
         return Features("geometric", np.array(features).flatten(), 0.89)
-
 
     def __str__(self):
         return str([self.xmin, self.ymin, self.xmax, self.ymax])

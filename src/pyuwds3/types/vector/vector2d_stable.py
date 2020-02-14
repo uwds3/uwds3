@@ -5,7 +5,10 @@ from .vector2d import Vector2D
 
 class Vector2DStable(Vector2D):
     """"Represents a 2D vector stabilized"""
-    def __init__(self, x=.0, y=.0, vx=.0, vy=.0, p_cov=.03, m_cov=.01):
+    def __init__(self,
+                 x=.0, y=.0,
+                 vx=.0, vy=.0,
+                 p_cov=.03, m_cov=.01):
         """Vector2DStablized constructor"""
         self.x = x
         self.y = y

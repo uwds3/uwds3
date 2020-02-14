@@ -4,7 +4,10 @@ import cv2
 
 class ScalarStable(object):
     """Represents a stabilized scalar"""
-    def __init__(self, x=.0, vx=.0, p_cov=.03, m_cov=.01):
+    def __init__(self,
+                 x=.0,
+                 vx=.0,
+                 p_cov=.03, m_cov=.01):
         """ScalarStabilized constructor"""
         self.x = x
         self.vx = vx
