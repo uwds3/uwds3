@@ -9,7 +9,7 @@ class Detection(object):
         """Detection constructor"""
         self.label = label
         self.confidence = confidence
-        self.bbox = BoundingBox(xmin, ymin, xmax, ymax, depth=None)
+        self.bbox = BoundingBox(xmin, ymin, xmax, ymax, depth=depth)
         self.features = {}
 
     def draw(self, image, color):

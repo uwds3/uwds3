@@ -1,8 +1,9 @@
 import numpy as np
 import cv2
+import math
 from .vector.vector2d import Vector2D
 from .features import Features
-from .cylinder import Cylinder
+from .shape.cylinder import Cylinder
 
 
 class BoundingBox(object):
@@ -30,7 +31,7 @@ class BoundingBox(object):
 
     def diagonal(self):
         """Returns the bbox's diagonal in pixels"""
-        return sqrt(pow(self.width(), 2)+pow(self.height(), 2))
+        return math.sqrt(pow(self.width(), 2)+pow(self.height(), 2))
 
     def radius(self):
         """Returns the bbox's radius in pixels"""

@@ -9,6 +9,7 @@ class Vector3DStable(Vector3D):
                  x=.0, y=.0, z=.0,
                  vx=.0, vy=.0, vz=.0,
                  ax=.0, ay=.0, az=.0,
+                 vmax=0.0001, amax=0.00001,
                  p_cov=.03, m_cov=.01, use_accel=True):
         self.x = x
         self.y = y
@@ -16,6 +17,8 @@ class Vector3DStable(Vector3D):
         self.vx = vx
         self.vy = vz
         self.vz = vz
+        self.vmax = vmax
+        self.amax = amax
         self.use_accel = use_accel
         if self.use_accel is True:
             self.ax = ax
@@ -96,7 +99,7 @@ class Vector3DStable(Vector3D):
     def update(self, x, y, z):
         """Updates/Filter the 3D vector"""
         self.__update_time()
-        self.filter.predict()
+        self.predict()
         measurement = np.array([[x], [y], [z]], np.float32)
         measurement = measurement.flatten().reshape((3, 1)) # ugly fix
         assert measurement.shape == (3, 1)
@@ -107,7 +110,26 @@ class Vector3DStable(Vector3D):
         """Predicts the 3D vector based on motion model"""
         self.__update_time()
         self.filter.predict()
-        self.from_array(self.filter.statePost)
+        x = self.filter.statePost[0][0]
+        y = self.filter.statePost[1][0]
+        z = self.filter.statePost[2][0]
+        vx = self.filter.statePost[3][0]
+        vy = self.filter.statePost[4][0]
+        vz = self.filter.statePost[5][0]
+        vx = self.vmax if vx > self.vmax else vx
+        vy = self.vmax if vy > self.vmax else vy
+        vz = self.vmax if vz > self.vmax else vz
+        if self.use_accel is True:
+            ax = self.filter.statePost[6][0]
+            ay = self.filter.statePost[7][0]
+            az = self.filter.statePost[8][0]
+            ax = self.amax if ax > self.amax else ax
+            ay = self.amax if ay > self.amax else ay
+            az = self.amax if az > self.amax else az
+            state = np.array([[x],[y],[z],[vx],[vy],[vz],[ax],[ay],[az]], dtype=np.float32)
+        else:
+            state = np.array([[x],[y],[z],[vx],[vy],[vz]], dtype=np.float32)
+        self.from_array(state)
 
     def __update_noise_cov(self, p_cov, m_cov):
         """Updates the process and measurement covariances"""

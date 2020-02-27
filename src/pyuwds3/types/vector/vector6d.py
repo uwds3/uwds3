@@ -91,6 +91,16 @@ class Vector6D(object):
         """Substracts the given vector"""
         return Vector6D().from_transform(np.dot(self.transform(), vector.inv().transform()))
 
+    def from_msg(self, msg):
+        self.pos.x = msg.position.x
+        self.pos.y = msg.position.y
+        self.pos.z = msg.position.z
+        qx = msg.orientation.x
+        qy = msg.orientation.y
+        qz = msg.orientation.z
+        qw = msg.orientation.w
+        self.from_quaternion(qx, qy, qz, qw)
+
     def to_msg(self):
         """Converts to ROS message"""
         msg = geometry_msgs.msg.Pose()

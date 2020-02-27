@@ -3,8 +3,11 @@ import uuid
 import cv2
 import numpy as np
 import uwds3_msgs
+import uwds3_msgs.msg
 from tf.transformations import euler_matrix
 from .camera import Camera
+from .shape.cylinder import Cylinder
+from .shape.sphere import Sphere
 from .vector.vector6d import Vector6D
 from .vector.vector6d_stable import Vector6DStable
 
@@ -38,6 +41,8 @@ class SceneNode(object):
 
         self.features = {}
 
+        self.shapes = []
+
         self.last_update = rospy.Time().now()
         self.expiration_duration = 1.0
 
@@ -54,7 +59,7 @@ class SceneNode(object):
         return self.pose is not None
 
     def has_shape(self):
-        return self.shape is not None
+        return len(self.shapes) > 0
 
     def has_camera(self):
         return self.camera is not None
@@ -146,9 +151,13 @@ class SceneNode(object):
             msg.features.append(features.from_msg(features))
 
         if msg.has_shape is True:
-            self.shape = None
-        else:
-            self.shape = None
+            for shape in msg.shapes:
+                if shape.type == uwds3_msgs.msg.PrimitiveShape.CYLINDER:
+                    self.shapes.append(Cylinder().from_msg(shape))
+                if shape.type == uwds3_msgs.msg.PrimitiveShape.SPHERE:
+                    self.shapes.append(Sphere().from_msg(shape))
+                # if shape.type == uwds3_msgs.msg.PrimitiveShape.MESH:
+                #     self.shapes.append(Mesh().from_msg(shape))
 
         if msg.has_camera is True:
             self.camera = Camera()
@@ -165,12 +174,12 @@ class SceneNode(object):
         msg.label = self.label
         if self.is_located():
             msg.is_located = True
-            q = self.pose.quaternion()
             msg.pose_stamped.header = header
             position = self.pose.position()
             msg.pose_stamped.pose.pose.position.x = position.x
             msg.pose_stamped.pose.pose.position.y = position.y
             msg.pose_stamped.pose.pose.position.z = position.z
+            q = self.pose.quaternion()
             msg.pose_stamped.pose.pose.orientation.x = q[0]
             msg.pose_stamped.pose.pose.orientation.y = q[1]
             msg.pose_stamped.pose.pose.orientation.z = q[2]
@@ -200,11 +209,13 @@ class SceneNode(object):
         if self.has_camera():
             msg.has_camera = True
             msg.camera.info.header = header
-            msg.camera.info.header.frame_id = msg.id
+            #msg.camera.info.header.frame_id = msg.id
             msg.camera = self.camera.to_msg()
 
         if self.has_shape():
-            msg.shape = self.shape.to_msg()
+            msg.has_shape = True
+            for shape in self.shapes:
+                msg.shapes.append(shape.to_msg())
 
         msg.last_update = header.stamp
         msg.expiration_duration = rospy.Duration(self.expiration_duration)
