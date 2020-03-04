@@ -7,10 +7,10 @@ def iou(bbox_a, bbox_b):
     ya = int(max(bbox_a.ymin, bbox_b.ymin))
     xb = int(min(bbox_a.xmax, bbox_b.xmax))
     yb = int(min(bbox_a.ymax, bbox_b.ymax))
-    intersection_area = max(0, xb-xa+1)*max(0, yb-ya+1)
+    intersection_area = max(0, xb - xa + 1)*max(0, yb - ya + 1)
     union_area = bbox_a.area() + bbox_b.area()
     if float(union_area - intersection_area) == 0.0:
-        return 0.0
+        return 1.0
     else:
         return intersection_area / float(union_area - intersection_area)
 

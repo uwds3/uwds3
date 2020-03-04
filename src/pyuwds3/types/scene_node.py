@@ -64,7 +64,7 @@ class SceneNode(object):
     def has_camera(self):
         return self.camera is not None
 
-    def draw(self, image, color, thickness, view_matrix, camera_matrix, dist_coeffs):
+    def draw(self, image, color, thickness=1, view_matrix=None, camera_matrix=None, dist_coeffs=None):
         """Draws the track"""
         if self.is_confirmed():
             track_color = (0, 200, 0, 0)
@@ -79,14 +79,17 @@ class SceneNode(object):
 
         if self.is_confirmed():
             if self.is_located() and self.is_confirmed():
-                sensor_pose = Vector6D().from_transform(np.dot(np.linalg.inv(view_matrix), self.pose.transform()))
-                rot = sensor_pose.rotation().to_array()
-                # for opencv convention
-                R = euler_matrix(rot[0][0], rot[1][0], rot[2][0], "rxyz")
-                rvec = cv2.Rodrigues(R[:3, :3])[0]
-                cv2.drawFrameAxes(image, camera_matrix, dist_coeffs,
-                                  rvec,
-                                  sensor_pose.position().to_array(), 0.1)
+                if view_matrix is not None and \
+                    camera_matrix is not None and \
+                        dist_coeffs is not None:
+                    sensor_pose = Vector6D().from_transform(np.dot(np.linalg.inv(view_matrix), self.pose.transform()))
+                    rot = sensor_pose.rotation().to_array()
+                    # for opencv convention
+                    R = euler_matrix(rot[0][0], rot[1][0], rot[2][0], "rxyz")
+                    rvec = cv2.Rodrigues(R[:3, :3])[0]
+                    cv2.drawFrameAxes(image, camera_matrix, dist_coeffs,
+                                      rvec,
+                                      sensor_pose.position().to_array(), 0.1)
             cv2.rectangle(image, (self.bbox.xmin, self.bbox.ymax-20),
                                  (self.bbox.xmax, self.bbox.ymax),
                                  (200, 200, 200), -1)

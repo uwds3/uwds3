@@ -5,11 +5,14 @@ from .bbox import BoundingBox
 class Detection(object):
     """Represents a 2D detection associated with a label and a confidence"""
 
-    def __init__(self, xmin, ymin, xmax, ymax, label, confidence, depth=None):
+    def __init__(self, xmin, ymin, xmax, ymax, label, confidence, depth=None, mask=None):
         """Detection constructor"""
         self.label = label
         self.confidence = confidence
         self.bbox = BoundingBox(xmin, ymin, xmax, ymax, depth=depth)
+        self.mask = mask
+        if self.mask is not None:
+            assert self.mask.shape[0] == self.bbox.height() and self.mask.shape[1] == self.bbox.width()
         self.features = {}
 
     def draw(self, image, color):
