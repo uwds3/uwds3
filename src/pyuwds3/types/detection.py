@@ -10,9 +10,12 @@ class Detection(object):
         self.label = label
         self.confidence = confidence
         self.bbox = BoundingBox(xmin, ymin, xmax, ymax, depth=depth)
-        self.mask = mask
-        if self.mask is not None:
-            assert self.mask.shape[0] == self.bbox.height() and self.mask.shape[1] == self.bbox.width()
+        self.mask = None
+        if mask is not None:
+            if mask.shape[0] != self.bbox.height() or mask.shape[1] != self.bbox.width():
+                self.mask = cv2.resize(mask.astype("uint8"), (self.bbox.height(), self.bbox.width()))
+            else:
+                self.mask = mask
         self.features = {}
 
     def draw(self, image, color):

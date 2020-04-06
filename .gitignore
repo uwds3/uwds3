@@ -1,3 +1,7 @@
+models/detection/
+models/features/
+models/estimation/
+
 devel/
 logs/
 build/

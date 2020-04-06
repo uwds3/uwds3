@@ -21,6 +21,15 @@ def centroid(bbox_a, bbox_b):
     return sqrt(pow(xa-xb, 2)+pow(ya-yb, 2))
 
 
+def manhattan_centroid(bbox_a, bbox_b):
+    """Returns the manhattan distance between centroids"""
+    xa = bbox_a.center().x
+    xb = bbox_b.center().x
+    ya = bbox_a.center().y
+    yb = bbox_b.center().y
+    return sqrt(pow(xa-xb, 2))+sqrt(pow(ya-yb, 2))
+
+
 def overlap(bbox_a, bbox_b):
     """Returns the overlap ratio"""
     xa = int(max(bbox_a.xmin, bbox_b.xmin))

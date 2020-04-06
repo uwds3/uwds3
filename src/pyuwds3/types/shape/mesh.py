@@ -8,6 +8,7 @@ from ..vector.vector6d import Vector6D
 class Mesh(Shape):
     """Represents a 3D Mesh"""
     def __init__(self, mesh_resource,
+                 scale_x=1., scale_y=1., scale_z=1.,
                  x=.0, y=.0, z=.0,
                  rx=.0, ry=.0, rz=.0):
         """Cylinder constructor"""
@@ -16,6 +17,7 @@ class Mesh(Shape):
                              rx=rx, ry=ry, rz=rz)
         self.mesh_resource = mesh_resource
         self.color = np.zeros(4)
+        self.scale = np.array([scale_x, scale_y, scale_z])
         self.color[3] = 1.0
 
     def center(self):
@@ -52,9 +54,9 @@ class Mesh(Shape):
         shape = uwds3_msgs.msg.PrimitiveShape()
         shape.type = self.type
         shape.mesh_resource = self.mesh_resource
-        shape.scale.x = 1.0
-        shape.scale.y = 1.0
-        shape.scale.z = 1.0
+        shape.scale.x = self.scale[0]
+        shape.scale.y = self.scale[1]
+        shape.scale.z = self.scale[2]
         shape.color.r = self.color[0]
         shape.color.g = self.color[1]
         shape.color.b = self.color[2]

@@ -16,6 +16,7 @@ class Shape(object):
         self.type = ShapeType.UNKNOWN
         self.pose = Vector6D()
         self.color = np.zeros(4)
+        self.scale = np.ones(3)
         self.color[3] = 1.0
 
     def is_box(self):

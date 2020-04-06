@@ -6,13 +6,13 @@ from .vector.vector2d import Vector2D
 class Camera(object):
     """Represents a camera sensor (real or virtual)"""
 
-    def __init__(self, fov, width, height, clipnear, clipfar):
+    def __init__(self):
         """Camera constructor"""
-        self.fov = fov
-        self.width = width
-        self.height = height
-        self.clipnear = clipnear
-        self.clipfar = clipfar
+        self.fov = 60.0
+        self.width = None
+        self.height = None
+        self.clipnear = 0.3
+        self.clipfar = 1000.0
         self.dist_coeffs = np.zeros((4, 1))
 
     def center(self):
@@ -37,9 +37,15 @@ class Camera(object):
                         [0, self.focal_length(), center.x, 0],
                         [0, 0, 1, 0]], dtype="double")
 
-    def from_msg(self, msg, fov=30, clipnear=0.3, clipfar=1000):
+    def from_msg(self, msg, fov=60, clipnear=0.3, clipfar=1000):
         """ """
-        pass
+        self.fov = fov
+        self.clipnear = clipnear
+        self.clipfar = clipfar
+        self.width = msg.width
+        self.height = msg.height
+        self.dist_coeffs = np.array(msg.D)
+        return self
 
     def to_msg(self):
         """Converts into a ROS message"""
@@ -58,16 +64,10 @@ class Camera(object):
 
 class HumanVisualModel(object):
     FOV = 60.0 # human field of view
-    WIDTH = 70 # image width resolution for rendering
-    HEIGHT = 68  # image height resolution for rendering
+    WIDTH = 480 # image width resolution for rendering
+    HEIGHT = 360  # image height resolution for rendering
     CLIPNEAR = 0.3 # clipnear
     CLIPFAR = 1e+3 # clipfar
-    # ASPECT = 1.333 # aspect ratio for rendering
-    # SACCADE_THRESHOLD = 0.01 # angular variation in rad/s
-    # SACCADE_ESPILON = 0.005 # error in angular variation
-    # FOCUS_DISTANCE_FIXATION = 0.1 # focus distance when performing a fixation
-    # FOCUS_DISTANCE_SACCADE = 0.5 # focus distance when performing a saccade
-
 
 class HumanCamera(Camera):
     def __init__(self):

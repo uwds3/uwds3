@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from .vector6d import Vector6D
 from .vector3d_stable import Vector3DStable
 
@@ -12,7 +13,7 @@ class Vector6DStable(Vector6D):
                  vrx=.0, vry=.0, vrz=.0,
                  ax=.0, ay=.0, az=.0,
                  arx=.0, ary=.0, arz=.0,
-                 p_cov=.008, m_cov=.028):
+                 p_cov=10, m_cov=100):
         """ """
         self.pos = Vector3DStable(x=x, y=y, z=z,
                                   vx=vx, vy=vy, vz=vz,
@@ -22,7 +23,7 @@ class Vector6DStable(Vector6D):
         self.rot = Vector3DStable(x=rx, y=ry, z=rz,
                                   vx=vrx, vy=vry, vz=vrz,
                                   ax=arx, ay=ary, az=arz,
-                                  p_cov=p_cov, m_cov=m_cov, use_accel=True)
+                                  p_cov=p_cov, m_cov=m_cov, use_accel=True, modulo=math.pi)
 
     def position(self):
         """ """

@@ -10,7 +10,7 @@ class Vector3DStable(Vector3D):
                  vx=.0, vy=.0, vz=.0,
                  ax=.0, ay=.0, az=.0,
                  vmax=0.0001, amax=0.00001,
-                 p_cov=.03, m_cov=.01, use_accel=True):
+                 p_cov=.03, m_cov=.01, use_accel=True, modulo=None):
         self.x = x
         self.y = y
         self.z = z
@@ -33,6 +33,7 @@ class Vector3DStable(Vector3D):
 
         self.filter.statePost = self.to_array()
         self.use_accel = use_accel
+        self.modulo = modulo
         if self.use_accel is True:
             self.filter.measurementMatrix = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0],
                                                       [0, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -113,19 +114,28 @@ class Vector3DStable(Vector3D):
         x = self.filter.statePost[0][0]
         y = self.filter.statePost[1][0]
         z = self.filter.statePost[2][0]
+        if self.modulo is not None:
+            x = self.filter.statePost[0][0]
+            y = self.filter.statePost[1][0]
+            z = self.filter.statePost[2][0]
+            x = x - self.modulo if x > self.modulo else x
+            y = y - self.modulo if y > self.modulo else y
+            z = z - self.modulo if z > self.modulo else z
         vx = self.filter.statePost[3][0]
         vy = self.filter.statePost[4][0]
         vz = self.filter.statePost[5][0]
-        vx = self.vmax if vx > self.vmax else vx
-        vy = self.vmax if vy > self.vmax else vy
-        vz = self.vmax if vz > self.vmax else vz
+        if self.vmax is not None:
+            vx = self.vmax if vx > self.vmax else vx
+            vy = self.vmax if vy > self.vmax else vy
+            vz = self.vmax if vz > self.vmax else vz
         if self.use_accel is True:
             ax = self.filter.statePost[6][0]
             ay = self.filter.statePost[7][0]
             az = self.filter.statePost[8][0]
-            ax = self.amax if ax > self.amax else ax
-            ay = self.amax if ay > self.amax else ay
-            az = self.amax if az > self.amax else az
+            if self.amax is not None:
+                ax = self.amax if ax > self.amax else ax
+                ay = self.amax if ay > self.amax else ay
+                az = self.amax if az > self.amax else az
             state = np.array([[x],[y],[z],[vx],[vy],[vz],[ax],[ay],[az]], dtype=np.float32)
         else:
             state = np.array([[x],[y],[z],[vx],[vy],[vz]], dtype=np.float32)

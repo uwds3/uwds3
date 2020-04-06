@@ -10,7 +10,7 @@ class Box(Shape):
     def __init__(self, dim_x, dim_y, dim_z,
                  x=.0, y=.0, z=.0,
                  rx=.0, ry=.0, rz=.0):
-        """Cylinder constructor"""
+        """Box constructor"""
         self.type = ShapeType.BOX
         self.pose = Vector6D(x=x, y=y, z=z,
                              rx=rx, ry=ry, rz=rz)
